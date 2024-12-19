@@ -91,13 +91,17 @@ function resolveImports(
     const base = path.join(cwd as string, path.relative(cwd as string, baseUrl || './'))
     const current = path.relative(base, path.dirname(imported.path))
 
-    if (pluginOptions.addJsExtension && !path.extname(resolved)) {
+    if (pluginOptions?.addJsExtension && !path.extname(resolved)) {
       resolved += '.js'
     }
 
     const target = path.relative(base, resolved)
 
-    const relative = path.relative(current, target).replace(/\\/g, '/')
+    let relative = path.relative(current, target).replace(/\\/g, '/')
+
+    if (!relative.startsWith('.')) {
+      relative = './' + relative
+    }
 
     lines[imported.index] = line.replace(imported.import, relative)
   }
