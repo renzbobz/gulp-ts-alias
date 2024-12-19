@@ -145,6 +145,12 @@ const tests: Record<string, Test> = {
     output: '',
     error: 'Received file with no path. Files must have path to be resolved.',
   },
+  ['should support addJsExtension option']: {
+    options: { addJsExtension: true, config: { paths: { '@/*': ['./src/*'] } } },
+    path: './src/pages/Page.ts',
+    input: "import Component from '@/components'",
+    output: "import Component from '../components.js'",
+  },
 }
 
 const run = async (test: Test): Promise<void> => {

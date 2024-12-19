@@ -1,5 +1,12 @@
-# @gulp-plugin/alias ![npm (custom registry)](https://img.shields.io/npm/v/@gulp-plugin/alias?logo=npm) [![GitHub Package Registry version](https://img.shields.io/github/release/gulp-plugin/alias.svg?label=gpr&logo=github)](https://github.com/gulp-plugin/alias/packages/896973)
+# Added addJsExtension option
 
+```
+npm i @rzbz/gulp-ts-alias
+```
+
+---
+
+# @gulp-plugin/alias ![npm (custom registry)](https://img.shields.io/npm/v/@gulp-plugin/alias?logo=npm) [![GitHub Package Registry version](https://img.shields.io/github/release/gulp-plugin/alias.svg?label=gpr&logo=github)](https://github.com/gulp-plugin/alias/packages/896973)
 
 [![Build](https://github.com/dhkatz/gulp-ts-alias/actions/workflows/node.js.yml/badge.svg)](https://github.com/dhkatz/gulp-ts-alias/actions/workflows/node.js.yml)
 [![Coverage Status](https://coveralls.io/repos/github/dhkatz/gulp-ts-alias/badge.svg?branch=master)](https://coveralls.io/github/dhkatz/gulp-ts-alias?branch=master) [![dependencies Status](https://david-dm.org/gulp-plugin/alias/status.svg)](https://david-dm.org/gulp-plugin/alias)
@@ -14,8 +21,8 @@ Resolve TypeScript import aliases and paths defined in `tsconfig`.
 
 ### Features
 
-* Supports all import types: `import`, `require`, `await import()`
-* Supports wild card aliases
+- Supports all import types: `import`, `require`, `await import()`
+- Supports wild card aliases
 
 ### Motivation
 
@@ -32,11 +39,11 @@ For legacy’s sake, here is a list of previous packages/scripts that have been 
 ## Usage
 
 ```javascript
-const typescript = require('gulp-typescript');
-const sourcemaps = require('gulp-sourcemaps');
-const alias = require('@gulp-plugin/alias');
+const typescript = require('gulp-typescript')
+const sourcemaps = require('gulp-sourcemaps')
+const alias = require('@gulp-plugin/alias')
 
-const { config } = typescript.createProject('tsconfig.json');
+const { config } = typescript.createProject('tsconfig.json')
 
 function build() {
   const compiled = src('./src/**/*.ts')
@@ -44,10 +51,14 @@ function build() {
     // or .pipe(alias('tsconfig.json'))
     // or even .pipe(alias())
     .pipe(sourcemaps.init())
-    .pipe(project());
+    .pipe(project())
 
   return compiled.js
-    .pipe(sourcemaps.write({ sourceRoot: file => path.relative(path.join(file.cwd, file.path), file.base) }))
+    .pipe(
+      sourcemaps.write({
+        sourceRoot: (file) => path.relative(path.join(file.cwd, file.path), file.base),
+      })
+    )
     .pipe(dest('build/'))
 }
 ```
@@ -71,22 +82,22 @@ In practice, these path aliases are often used in this fashion
 Input:
 
 ```typescript
-import express from 'express';
+import express from 'express'
 
-import A from './file'; // Normal relative import
+import A from './file' // Normal relative import
 
 // Aliased import, resolves to some relative path to rootDir
-import B from '@/components';
+import B from '@/components'
 ```
 
 Output:
 
 ```typescript
-import express from 'express';
+import express from 'express'
 
-import A from './file';
+import A from './file'
 
 // gulp-ts-alias finds the correct relative path
 // and replaces it before compilation
-import B from '../../components';
+import B from '../../components'
 ```

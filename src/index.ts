@@ -15,6 +15,7 @@ export interface FileData {
 export interface PluginOptions {
   config?: ts.CompilerOptions | string
   cwd?: string
+  addJsExtension?: boolean
 }
 
 export type AliasPlugin = (pluginOptions: PluginOptions) => Transform
@@ -42,7 +43,8 @@ function findImports(line: string): string[] | null {
 function resolveImports(
   file: ReadonlyArray<string>,
   imports: FileData[],
-  options: ts.CompilerOptions
+  options: ts.CompilerOptions,
+  pluginOptions?: PluginOptions
 ): string[] {
   const { baseUrl, paths, cwd } = options
 
@@ -88,6 +90,11 @@ function resolveImports(
 
     const base = path.join(cwd as string, path.relative(cwd as string, baseUrl || './'))
     const current = path.relative(base, path.dirname(imported.path))
+
+    if (pluginOptions.addJsExtension && !path.extname(resolved)) {
+      resolved += '.js'
+    }
+
     const target = path.relative(base, resolved)
 
     const relative = path.relative(current, target).replace(/\\/g, '/')
@@ -128,9 +135,11 @@ function resolveConfig(config?: string | ts.CompilerOptions, cwd?: string): ts.C
   return config
 }
 
-const alias: AliasPlugin = ({ config, cwd }: PluginOptions) => {
+const alias: AliasPlugin = (pluginOptions: PluginOptions) => {
+  let cwd = pluginOptions.cwd
   cwd = cwd === undefined ? process.cwd() : cwd === '.' ? './' : cwd
 
+  const config = pluginOptions.config
   const compilerOptions = resolveConfig(config, cwd)
 
   if (!compilerOptions.paths) {
@@ -168,7 +177,7 @@ const alias: AliasPlugin = ({ config, cwd }: PluginOptions) => {
         return callback(undefined, file)
       }
 
-      const resolved = resolveImports(lines, imports, compilerOptions)
+      const resolved = resolveImports(lines, imports, compilerOptions, pluginOptions)
 
       file.contents = Buffer.from(resolved.join('\n'))
 
