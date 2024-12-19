@@ -23,10 +23,6 @@
     "name": "David Katz",
     "url": "https://github.com/dhkatz"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gulp-plugin/alias"
-  },
   "license": "MIT",
   "keywords": [
     "gulpplugin",
