@@ -1,4 +1,5 @@
-# Added addJsExtension option
+## Fixed incomplete relative path generated
+## Added addJsExtension option
 
 ```
 npm i @rzbz/gulp-ts-alias
